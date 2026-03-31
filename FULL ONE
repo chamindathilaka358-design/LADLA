@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ladla Pub & Restaurant – Puttalam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital@0;1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --ink: #12100e; --parchment: #f5ead8; --amber: #c8780a;
+      --gold: #e8a820; --cream: #fdf6e8; --dark: #1e1208; --muted: #7a6248;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--cream); color: var(--ink); font-family: 'Lora', serif; overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: var(--dark); border-bottom: 2px solid var(--amber);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 60px;
+    }
+    nav .logo { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.2rem; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: var(--parchment); text-decoration: none; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; transition: color .25s; }
+    nav ul a:hover { color: var(--gold); }
+
+    #hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 65% 35%, rgba(200,120,10,.2) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 75%, rgba(45,74,30,.25) 0%, transparent 50%),
+        linear-gradient(150deg, #1e1208 0%, #12100e 50%, #2a1a06 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 2rem 4rem; position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(232,168,32,.07) 1px, transparent 1px);
+      background-size: 38px 38px; pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block; border: 1px solid var(--amber); color: var(--amber);
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      padding: .4rem 1.3rem; border-radius: 2px; margin-bottom: 1.8rem;
+      animation: fadeUp .8s ease both;
+    }
+    #hero h1 {
+      font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 8vw, 6rem);
+      color: var(--parchment); line-height: 1.05; animation: fadeUp .9s .1s ease both;
+    }
+    #hero h1 em { color: var(--gold); font-style: italic; display: block; }
+    #hero p { margin-top: 1.4rem; color: var(--muted); font-size: 1.05rem; max-width: 440px; line-height: 1.7; animation: fadeUp 1s .2s ease both; }
+    .hero-cta { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 1s .3s ease both; }
+    .btn { display: inline-block; padding: .75rem 2rem; font-family: 'Lora', serif; font-size: .9rem; letter-spacing: .06em; text-decoration: none; border-radius: 2px; transition: all .25s; cursor: pointer; }
+    .btn-primary { background: var(--amber); color: var(--cream); border: 2px solid var(--amber); }
+    .btn-primary:hover { background: var(--gold); border-color: var(--gold); }
+    .btn-outline { background: transparent; color: var(--parchment); border: 2px solid var(--muted); }
+    .btn-outline:hover { border-color: var(--parchment); }
+
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--amber); margin-bottom: .6rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--dark); margin-bottom: 1.2rem; line-height: 1.2; }
+    .divider { width: 60px; height: 2px; background: var(--amber); margin: 1.2rem 0 2rem; }
+
+    #about {
+      background: var(--parchment);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-bg { position: absolute; inset: 0; z-index: 0; }
+    .about-bg-slide {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+    }
+    .about-bg-slide.active { opacity: 1; }
+    .about-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(245,234,216,.92) 0%, rgba(245,234,216,.82) 50%, rgba(245,234,216,.72) 100%);
+      z-index: 1;
+    }
+    #about .section-inner { position: relative; z-index: 2; }
+    #about p { font-size: 1.05rem; line-height: 1.85; color: var(--dark); max-width: 640px; }
+    #about p + p { margin-top: 1rem; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 2.5rem; }
+    .about-stat { background: var(--cream); border-left: 3px solid var(--amber); padding: 1.2rem 1.5rem; }
+    .about-stat strong { display: block; font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--amber); margin-bottom: .3rem; }
+    .about-stat span { font-size: .88rem; color: var(--muted); }
+
+    #menu { background: var(--cream); }
+    .menu-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .tab-btn { padding: .5rem 1.3rem; border: 1px solid var(--amber); background: transparent; color: var(--amber); font-family: 'Lora', serif; font-size: .85rem; letter-spacing: .06em; cursor: pointer; border-radius: 2px; transition: all .2s; }
+    .tab-btn.active, .tab-btn:hover { background: var(--amber); color: var(--cream); }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; }
+    .menu-item { background: var(--parchment); border: 1px solid rgba(200,120,10,.2); padding: 1.2rem 1.4rem; border-radius: 3px; display: flex; flex-direction: column; gap: .4rem; transition: box-shadow .2s; }
+    .menu-item:hover { box-shadow: 0 4px 20px rgba(200,120,10,.15); }
+    .menu-item-top { display: flex; justify-content: space-between; align-items: baseline; }
+    .menu-item h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--dark); }
+    .menu-item .price { color: var(--amber); font-size: .95rem; font-weight: bold; white-space: nowrap; }
+    .menu-item p { font-size: .82rem; color: var(--muted); font-style: italic; line-height: 1.5; }
+    .menu-panel { display: none; }
+    .menu-panel.active { display: block; }
+    .menu-note { margin-top: 1.5rem; font-size: .85rem; color: var(--muted); font-style: italic; }
+
+    #hours { background: var(--dark); }
+    #hours .section-title { color: var(--parchment); }
+    #hours .section-label { color: var(--gold); }
+    .hours-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .hours-card { background: rgba(255,255,255,.05); border: 1px solid rgba(232,168,32,.2); padding: 1.3rem 1.5rem; border-radius: 3px; }
+    .hours-card .day { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: .4rem; }
+    .hours-card .time { font-size: 1.05rem; color: var(--parchment); }
+    .hours-note { margin-top: 1.8rem; font-size: .85rem; color: var(--muted); font-style: italic; }
+
+    #contact { background: var(--parchment); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .contact-info p { line-height: 1.8; color: var(--dark); margin-bottom: .5rem; }
+    .contact-info strong { color: var(--amber); display: block; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; margin-top: 1.4rem; margin-bottom: .3rem; }
+    .map-embed { border-radius: 4px; overflow: hidden; border: 2px solid rgba(200,120,10,.3); height: 290px; }
+    .map-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    footer { background: var(--ink); color: var(--muted); text-align: center; padding: 2rem; font-size: .82rem; letter-spacing: .06em; }
+    footer span { color: var(--gold); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 200;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--gold));
+      transition: width .1s linear;
+      box-shadow: 0 0 8px rgba(232,168,32,.7);
+    }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal         { opacity: 0; transform: translateY(40px);   transition: opacity .75s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1); }
+    .reveal-left    { opacity: 0; transform: translateX(-50px);  transition: opacity .75s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1); }
+    .reveal-right   { opacity: 0; transform: translateX(50px);   transition: opacity .75s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1); }
+    .reveal-scale   { opacity: 0; transform: scale(.88);         transition: opacity .7s ease, transform .7s cubic-bezier(.34,1.56,.64,1); }
+    .reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible {
+      opacity: 1; transform: none;
+    }
+    /* stagger children inside a revealed parent */
+    .stagger > * { opacity: 0; transform: translateY(30px); transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
+    .stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:.05s; }
+    .stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:.15s; }
+    .stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:.25s; }
+    .stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:.35s; }
+    .stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:.45s; }
+    .stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:.55s; }
+    .stagger.visible > *:nth-child(7) { opacity:1; transform:none; transition-delay:.65s; }
+
+    /* ── ACTIVE NAV LINK ── */
+    nav ul a.active { color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 2px; }
+
+    /* ── PARALLAX HERO ── */
+    .hero-parallax { will-change: transform; }
+
+    /* ── SECTION DIVIDER WAVE ── */
+    .wave-divider { display: block; width: 100%; overflow: hidden; line-height: 0; }
+    .wave-divider svg { display: block; }
+
+    /* ── SMOOTH HOVER ON CARDS ── */
+    .menu-item   { transition: box-shadow .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1); }
+    .menu-item:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 12px 32px rgba(200,120,10,.2); }
+    .hours-card  { transition: box-shadow .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1), border-color .3s; }
+    .hours-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 8px 24px rgba(232,168,32,.2); }
+    .about-stat  { transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s; }
+    .about-stat:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 20px rgba(200,120,10,.15); }
+
+    /* ── BEER LOGO ANIMATION ── */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50%       { transform: translateY(-14px) rotate(2deg); }
+    }
+    @keyframes bubbleRise {
+      0%   { transform: translateY(0) scale(1); opacity: .8; }
+      100% { transform: translateY(-70px) scale(.2); opacity: 0; }
+    }
+    @keyframes foamPulse {
+      0%, 100% { transform: scaleX(1); }
+      50%       { transform: scaleX(1.07); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(232,168,32,.5)); }
+      50%       { filter: drop-shadow(0 0 24px rgba(232,168,32,1)); }
+    }
+    @keyframes spinIn {
+      from { opacity: 0; transform: rotate(-180deg) scale(.3); }
+      to   { opacity: 1; transform: rotate(0deg) scale(1); }
+    }
+    .hero-logo-wrap {
+      position: relative;
+      margin: 0 auto 2rem;
+      width: 150px;
+      animation: fadeUp .6s ease both, float 4s ease-in-out 1s infinite;
+    }
+    .hero-logo-img {
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--amber);
+      display: block;
+      margin: 0 auto;
+      animation: spinIn .8s cubic-bezier(.34,1.56,.64,1) both, glowPulse 3s ease-in-out 1s infinite;
+    }
+    /* Animated bubbles around logo */
+    .logo-bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(232,168,32,.6);
+      animation: bubbleRise ease-in infinite;
+    }
+    .lb1 { width:9px;  height:9px;  left:20px;  bottom:10px; animation-duration:1.8s; animation-delay:0s; }
+    .lb2 { width:6px;  height:6px;  left:70px;  bottom:5px;  animation-duration:2.2s; animation-delay:.5s; }
+    .lb3 { width:7px;  height:7px;  left:115px; bottom:15px; animation-duration:1.6s; animation-delay:1s; }
+    .lb4 { width:5px;  height:5px;  left:45px;  bottom:0px;  animation-duration:2s;   animation-delay:1.4s; }
+    /* Nav logo */
+    .nav-logo-img {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--amber);
+      vertical-align: middle;
+      margin-right: .5rem;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<nav>
+  <div class="logo">
+    <img class="nav-logo-img" src="https://instagram.fcmb12-1.fna.fbcdn.net/v/t51.82787-19/558028388_17842371927592106_7517362562287396718_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fcmb12-1.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2gEZHWhdThyqfnYuKk-bhD1nFNUIQwvyAVPbcOyZo7EpEy1PvlTG0shm4z5LTMOdbErythNop0tFl6iBJyyRJbdq&_nc_ohc=IdYj0awjmpYQ7kNvwGzOcrM&_nc_gid=Xcr0DUEe4ljcH4Yaip0jmg&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Afzq2oR53JCF-jTfsKMt0604VUuWbYHThhqdb1vNue3Fww&oe=69D13B49&_nc_sid=7a9f4b" alt="Ladla Logo" onerror="this.style.display='none'"/>
+    Ladla Pub &amp; Restaurant
+  </div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#hours">Hours</a></li>
+    <li><a href="#contact">Find Us</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-parallax" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+  <div class="hero-badge">Puttalam, Sri Lanka · Good Food &amp; Good Drinks</div>
+  <div class="hero-logo-wrap">
+    <img class="hero-logo-img"
+      src="https://instagram.fcmb12-1.fna.fbcdn.net/v/t51.82787-19/558028388_17842371927592106_7517362562287396718_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fcmb12-1.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2gEZHWhdThyqfnYuKk-bhD1nFNUIQwvyAVPbcOyZo7EpEy1PvlTG0shm4z5LTMOdbErythNop0tFl6iBJyyRJbdq&_nc_ohc=IdYj0awjmpYQ7kNvwGzOcrM&_nc_gid=Xcr0DUEe4ljcH4Yaip0jmg&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Afzq2oR53JCF-jTfsKMt0604VUuWbYHThhqdb1vNue3Fww&oe=69D13B49&_nc_sid=7a9f4b"
+      alt="Ladla Pub Logo"
+      onerror="this.outerHTML='<div style=\'font-size:5rem;animation:glowPulse 3s ease-in-out infinite;\'>🍺</div>'"
+    />
+    <div class="logo-bubble lb1"></div>
+    <div class="logo-bubble lb2"></div>
+    <div class="logo-bubble lb3"></div>
+    <div class="logo-bubble lb4"></div>
+  </div>
+  <h1>Ladla Pub<em>&amp; Restaurant</em></h1>
+  <p>Your favourite spot in Puttalam for great food, cold drinks, and warm company. Come as a stranger, leave as a regular.</p>
+  <div class="hero-cta">
+    <a href="#menu" class="btn btn-primary">See Our Menu</a>
+    <a href="#contact" class="btn btn-outline">Find Us</a>
+  </div>
+  </div>
+</section>
+
+<section id="about">
+  <!-- Background image slideshow -->
+  <div class="about-bg">
+    <div class="about-bg-slide active" style="background-image:url('https://lh3.googleusercontent.com/p/AF1QipMunHvFqYumIuR8iEih_px7O9kmDKVuLsT9a_li=w1920-h1080-k-no')"></div>
+    <div class="about-bg-slide" style="background-image:url('https://lh3.googleusercontent.com/p/AF1QipMunHvFqYumIuR8iEih_px7O9kmDKVuLsT9a_li=w1920-h1080-k-no')"></div>
+  </div>
+  <div class="about-overlay"></div>
+  <div class="section-inner">
+    <p class="section-label reveal">Our Story</p>
+    <h2 class="section-title reveal">Puttalam's Favourite<br>Pub &amp; Restaurant</h2>
+    <div class="divider reveal"></div>
+    <p class="reveal">Ladla Pub &amp; Restaurant is a beloved local spot in the heart of Puttalam. We bring together the warmth of Sri Lankan hospitality with great food and a full drinks menu — a place to relax, celebrate, and enjoy yourself.</p>
+    <p class="reveal">Whether you're dropping in for a cold drink after a long day, sharing a meal with family, or catching up with friends, our doors are always open and our kitchen is always ready.</p>
+    <div class="about-grid stagger">
+      <div class="about-stat"><strong>🍛</strong><span>Sri Lankan &amp; international dishes</span></div>
+      <div class="about-stat"><strong>🍺</strong><span>Full bar — beers, spirits &amp; more</span></div>
+      <div class="about-stat"><strong>👨‍👩‍👧</strong><span>Family-friendly atmosphere</span></div>
+      <div class="about-stat"><strong>📍</strong><span>Right here in Puttalam town</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="section-inner">
+    <p class="section-label reveal">Eat &amp; Drink</p>
+    <h2 class="section-title reveal">Our Menu</h2>
+    <div class="divider reveal"></div>
+    <div class="menu-tabs reveal">
+      <button class="tab-btn active" onclick="switchTab('food', event)">🍽️ Food</button>
+      <button class="tab-btn" onclick="switchTab('beers', event)">🍺 Beer &amp; Stout</button>
+      <button class="tab-btn" onclick="switchTab('spirits', event)">🥃 Spirits &amp; Wine</button>
+      <button class="tab-btn" onclick="switchTab('soft', event)">🥤 Soft Drinks</button>
+    </div>
+
+    <div id="tab-food" class="menu-panel active">
+      <div class="menu-grid stagger">
+        <div class="menu-item"><div class="menu-item-top"><h4>Rice &amp; Curry</h4><span class="price">LKR 450</span></div><p>Fragrant Sri Lankan rice with a selection of curries, sambols, and papadum.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Kottu Roti</h4><span class="price">LKR 550</span></div><p>Chopped roti stir-fried with vegetables, egg, and choice of chicken or beef.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Fried Rice</h4><span class="price">LKR 500</span></div><p>Wok-tossed rice with mixed vegetables and egg. Add chicken or seafood.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Devilled Chicken</h4><span class="price">LKR 700</span></div><p>Crispy chicken in a tangy, spicy Sri Lankan devilled sauce with peppers and onion.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Grilled Fish</h4><span class="price">LKR 800</span></div><p>Fresh local fish, marinated in spices and grilled to perfection.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Short Eats Platter</h4><span class="price">LKR 350</span></div><p>A selection of local favourites — rolls, cutlets, and patties. Great to share.</p></div>
+      </div>
+      <p class="menu-note">* Prices are indicative. Ask our staff for today's specials and current prices.</p>
+    </div>
+
+    <div id="tab-beers" class="menu-panel">
+      <div class="menu-grid">
+        <div class="menu-item"><div class="menu-item-top"><h4>Lion Lager</h4><span class="price">LKR 380</span></div><p>Sri Lanka's iconic beer. Light, crisp, and always refreshing. Served ice cold.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Lion Strong</h4><span class="price">LKR 420</span></div><p>A fuller-bodied strong lager with a satisfying kick.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Lion Stout</h4><span class="price">LKR 420</span></div><p>Rich Sri Lankan stout with roasted malt flavours and a smooth finish.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Carlsberg</h4><span class="price">LKR 450</span></div><p>International premium lager. Smooth, balanced, and universally loved.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-spirits" class="menu-panel">
+      <div class="menu-grid">
+        <div class="menu-item"><div class="menu-item-top"><h4>Arrack &amp; Soda</h4><span class="price">LKR 350</span></div><p>Ceylon arrack — Sri Lanka's classic spirit — with soda and fresh lime.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Whisky</h4><span class="price">LKR 500</span></div><p>Ask our staff for available brands. Neat, on the rocks, or with water.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Gin &amp; Tonic</h4><span class="price">LKR 550</span></div><p>Refreshing gin and tonic with ice and fresh lime. Light and easy.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Red / White Wine</h4><span class="price">LKR 700</span></div><p>House wine by the glass. Ask staff for today's selection.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-soft" class="menu-panel">
+      <div class="menu-grid">
+        <div class="menu-item"><div class="menu-item-top"><h4>Fresh Lime Soda</h4><span class="price">LKR 180</span></div><p>Squeezed lime, soda water, sugar, and salt. A Sri Lankan staple.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>King Coconut</h4><span class="price">LKR 120</span></div><p>Fresh thambili — the ultimate natural refreshment on a warm day.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Soft Drinks</h4><span class="price">LKR 150</span></div><p>Coca-Cola, Sprite, Fanta, and more. Always chilled.</p></div>
+        <div class="menu-item"><div class="menu-item-top"><h4>Tea / Coffee</h4><span class="price">LKR 120</span></div><p>Proper Ceylon tea or fresh filter coffee. Milk on the side.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="hours">
+  <div class="section-inner">
+    <p class="section-label reveal">When We're Open</p>
+    <h2 class="section-title reveal">Opening Hours</h2>
+    <div class="divider reveal"></div>
+    <div class="hours-grid stagger">
+      <div class="hours-card"><div class="day">Monday</div><div class="time">5:00 pm – 12:00 am</div></div>
+      <div class="hours-card"><div class="day">Tuesday</div><div class="time">5:00 pm – 12:00 am</div></div>
+      <div class="hours-card"><div class="day">Wednesday</div><div class="time">5:00 pm – 12:00 am</div></div>
+      <div class="hours-card"><div class="day">Thursday</div><div class="time">5:00 pm – 12:00 am</div></div>
+      <div class="hours-card"><div class="day">Friday</div><div class="time">5:00 pm – 12:00 am</div></div>
+      <div class="hours-card"><div class="day">Saturday</div><div class="time">5:00 pm – 12:00 am</div></div>
+      <div class="hours-card"><div class="day">Sunday</div><div class="time">12:00 pm – 12:00 am</div></div>
+    </div>
+    <p class="hours-note">* Sunday opens earlier at 12:00 pm. Hours may vary on Poya days and public holidays — call us to confirm.</p>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-inner">
+    <p class="section-label reveal">Get In Touch</p>
+    <h2 class="section-title reveal">Find Us in Puttalam</h2>
+    <div class="divider reveal"></div>
+    <div class="contact-grid">
+      <div class="contact-info reveal-left">
+        <strong>Location</strong>
+        <p>Ladla Pub &amp; Restaurant<br>Puttalam, North Western Province<br>Sri Lanka</p>
+        <strong>Directions</strong>
+        <p>Use the map or tap below to get directions straight to us on Google Maps.</p>
+        <strong>Reservations</strong>
+        <p>Walk-ins always welcome. For large groups, please call ahead.</p>
+        <br>
+        <a href="https://maps.app.goo.gl/B8PaUxZEUWGtnP7n8" target="_blank" class="btn btn-primary">
+          📍 Get Directions
+        </a>
+      </div>
+      <div class="map-embed reveal-right">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.9100547292874!2d79.8569583!3d7.584769099999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2cd3a9d0a4d73%3A0xa5764fd59be75bf4!2sLadla%20Pub%20%26%20Restaurant!5e0!3m2!1sen!2slk!4v1774935512556!5m2!1sen!2slk"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 <span>Ladla Pub &amp; Restaurant</span> · Puttalam, Sri Lanka · Made with 🍺</p>
+</footer>
+
+<script>
+  // ── ABOUT SECTION IMAGE SLIDESHOW ──
+  const slides = document.querySelectorAll('.about-bg-slide');
+  let currentSlide = 0;
+  if (slides.length > 1) {
+    setInterval(() => {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, 30000);
+  }
+
+  // ── TAB SWITCHING ──
+  function switchTab(tab, event) {
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.currentTarget.classList.add('active');
+    // re-trigger stagger on newly visible grid
+    const grid = document.querySelector('#tab-' + tab + ' .stagger');
+    if (grid) {
+      grid.classList.remove('visible');
+      requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.add('visible')));
+    }
+  }
+
+  // ── SCROLL PROGRESS BAR ──
+  const progressBar = document.getElementById('scroll-progress');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+  }
+
+  // ── INTERSECTION OBSERVER (reveal + stagger) ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger')
+    .forEach(el => revealObserver.observe(el));
+
+  // ── ACTIVE NAV HIGHLIGHT ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav ul a');
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`nav ul a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => sectionObserver.observe(s));
+
+  // ── PARALLAX HERO ──
+  const hero = document.querySelector('#hero');
+  function parallaxHero() {
+    const y = window.scrollY;
+    if (y < window.innerHeight) {
+      hero.style.backgroundPositionY = (y * 0.4) + 'px';
+      const content = hero.querySelector('.hero-parallax');
+      if (content) content.style.transform = `translateY(${y * 0.25}px)`;
+    }
+  }
+
+  // ── NAV SHRINK ON SCROLL ──
+  const nav = document.querySelector('nav');
+  function updateNav() {
+    if (window.scrollY > 60) {
+      nav.style.height = '50px';
+      nav.style.boxShadow = '0 2px 20px rgba(0,0,0,.5)';
+    } else {
+      nav.style.height = '60px';
+      nav.style.boxShadow = 'none';
+    }
+  }
+
+  // ── SMOOTH ANCHOR SCROLL ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ── COMBINED SCROLL HANDLER ──
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateProgress();
+        parallaxHero();
+        updateNav();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // initial call
+  updateProgress();
+  updateNav();
+</script>
+</body>
+</html>
